@@ -517,6 +517,433 @@ const lessons = [
       },
     ],
   },
+
+  // ── OOP LESSONS ──────────────────────────────────────────────────────────
+  {
+    id: 'oop-class',
+    title: 'OOP: Classes and constructors',
+    goal: 'Define a class with a constructor and private attributes, then create objects from it.',
+    why: 'A class is a blueprint for creating objects. The constructor (__init__) runs automatically when you create an object and sets up its starting data. In A-level exams you are often given a class diagram and asked to write the code that matches it.',
+    ideas: [
+      'Use the class keyword to define a class',
+      '__init__ is the constructor — it runs when an object is created',
+      'self refers to the specific object being created or used',
+      'Private attributes are written with a double underscore: self.__name',
+    ],
+    beginnerTip: 'Think of a class like a form template. Every time you fill in a new form you get a new object. __init__ is what fills in the blanks for you automatically.',
+    commonMistakes: [
+      'Forgetting self as the first parameter in __init__ and every method',
+      'Writing __init__ with a capital I — it must be all lowercase',
+      'Forgetting the double underscore __ before private attribute names',
+      'Trying to access a private attribute from outside the class directly',
+    ],
+    examTip: 'In the exam, if you are given a class diagram, match your attribute names and types exactly. The mark scheme checks exact names.',
+    code: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height = height\n        self.__age = age\n\n# Create two Tree objects\ntree1 = Tree("Oak", 12.5, 80)\ntree2 = Tree("Pine", 8.0, 30)\n\nprint(tree1)   # shows the object reference, not the data\nprint(tree2)`,
+    io: [
+      {
+        title: 'What you see when you print an object directly',
+        input: 'tree1 = Tree("Oak", 12.5, 80)\nprint(tree1)',
+        output: '<__main__.Tree object at 0x...>\n\nNote: you need get methods to print the actual data.',
+      },
+      {
+        title: 'How private attributes are protected',
+        input: 'print(tree1.__species)',
+        output: 'AttributeError: "Tree" object has no attribute "__species"\n\nPrivate means only methods inside the class can access it.',
+      },
+    ],
+    challenge: `# Task:\n# A class diagram gives you:\n#   Class: Student\n#   Attributes: name (String), grade (Integer)\n#   Constructor takes name and grade as parameters.\n#\n# Write the full class with private attributes.\n# Then create one Student object called s1 with name="Alice" and grade=9.`,
+    solution: `class Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n\ns1 = Student("Alice", 9)`,
+    recommendations: [
+      'Always write self.__attributeName (double underscore) to make attributes private.',
+      'The constructor must be named __init__ exactly — two underscores on each side.',
+      'If a question says "write the class definition", you need class Name: and the __init__ method at minimum.',
+    ],
+    quiz: [
+      {
+        question: 'What is the purpose of __init__ in a Python class?',
+        options: [
+          'It deletes an object when it is no longer needed',
+          'It is called automatically when a new object is created',
+          'It sorts the attributes alphabetically',
+          'It makes the class private',
+        ],
+        answer: 1,
+        explain: '__init__ is the constructor. It runs automatically when you write ClassName(...) to create an object.',
+      },
+      {
+        question: 'How do you make an attribute private in Python?',
+        options: [
+          'Write it in capital letters: SPECIES',
+          'Add private before it: private species',
+          'Use a double underscore prefix: self.__species',
+          'Use a single underscore: self._species',
+        ],
+        answer: 2,
+        explain: 'A double underscore before the name (self.__name) makes the attribute private in Python.',
+      },
+      {
+        question: 'Which line correctly creates a Tree object?',
+        options: [
+          'Tree.new("Oak", 12.5, 80)',
+          'tree1 = Tree("Oak", 12.5, 80)',
+          'tree1 = new Tree("Oak", 12.5, 80)',
+          'Tree.__init__("Oak", 12.5, 80)',
+        ],
+        answer: 1,
+        explain: 'You create an object by writing VariableName = ClassName(arguments). Python calls __init__ for you.',
+      },
+    ],
+  },
+  {
+    id: 'oop-getters',
+    title: 'OOP: Get methods',
+    goal: 'Write get methods that allow safe access to private attributes from outside the class.',
+    why: 'Because private attributes cannot be accessed directly from outside the class, you provide get methods (also called getters or accessor methods). These are short methods that simply return the value of one attribute. The exam almost always asks you to write at least one.',
+    ideas: [
+      'A get method is a regular method that returns one private attribute',
+      'The naming convention is getAttributeName, e.g. getSpecies',
+      'Get methods always take only self as a parameter',
+      'They let outside code read data without being able to change it directly',
+    ],
+    beginnerTip: 'Imagine a vending machine. You can see the items through the glass (get methods let you see the data), but you cannot reach in and grab them directly (private means no direct access).',
+    commonMistakes: [
+      'Writing get methods with extra parameters — they only need self',
+      'Forgetting return inside the get method — without return, you get None',
+      'Calling the method without brackets: tree1.getSpecies instead of tree1.getSpecies()',
+      'Trying to access self.__species from outside the class instead of calling the getter',
+    ],
+    examTip: 'The exam often asks for exactly one get method. Write it neatly: def getX(self): followed by return self.__x on the next line indented.',
+    code: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height = height\n        self.__age = age\n\n    def getSpecies(self):\n        return self.__species\n\n    def getHeight(self):\n        return self.__height\n\n    def getAge(self):\n        return self.__age\n\ntree1 = Tree("Oak", 12.5, 80)\nprint(tree1.getSpecies())\nprint(tree1.getHeight())\nprint(tree1.getAge())`,
+    io: [
+      {
+        title: 'Using get methods to read private data',
+        input: 'tree1 = Tree("Oak", 12.5, 80)',
+        output: 'Oak\n12.5\n80',
+      },
+      {
+        title: 'What happens without brackets when calling a method',
+        input: 'print(tree1.getSpecies)',
+        output: '<bound method Tree.getSpecies of <__main__.Tree ...>>\n\nAlways call methods WITH brackets: tree1.getSpecies()',
+      },
+    ],
+    challenge: `# Task:\n# Add two get methods to this Student class:\n# getName() should return the name\n# getGrade() should return the grade\n\nclass Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n\n    # Write getName here\n\n    # Write getGrade here\n\ns1 = Student("Alice", 9)\nprint(s1.getName())\nprint(s1.getGrade())`,
+    solution: `class Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n\n    def getName(self):\n        return self.__name\n\n    def getGrade(self):\n        return self.__grade\n\ns1 = Student("Alice", 9)\nprint(s1.getName())\nprint(s1.getGrade())`,
+    recommendations: [
+      'Every get method follows the same pattern: def getX(self): then return self.__x.',
+      'The exam may say "write a method that returns the species" — this means write a get method.',
+      'Never forget return. A method without return gives back None instead of the value.',
+    ],
+    quiz: [
+      {
+        question: 'What does a get method do?',
+        options: [
+          'It changes the value of a private attribute',
+          'It deletes the object',
+          'It returns the value of a private attribute',
+          'It creates a new object',
+        ],
+        answer: 2,
+        explain: 'A get method provides safe read-only access to a private attribute by returning its value.',
+      },
+      {
+        question: 'Which is the correct get method for a private attribute called __score?',
+        options: [
+          'def getScore(): return score',
+          'def getScore(self): return self.__score',
+          'def getScore(self): self.__score',
+          'def get(self): return __score',
+        ],
+        answer: 1,
+        explain: 'You need self as the parameter and return self.__score (with double underscore) inside the method.',
+      },
+      {
+        question: 'How do you call a get method on an object called obj?',
+        options: [
+          'obj.getName',
+          'getName(obj)',
+          'obj.getName()',
+          'get obj.name',
+        ],
+        answer: 2,
+        explain: 'You call a method using dot notation with brackets: obj.getName()',
+      },
+    ],
+  },
+  {
+    id: 'oop-methods',
+    title: 'OOP: Writing useful methods',
+    goal: 'Add methods to a class that perform actions or calculations on an object\'s own data.',
+    why: 'Beyond get methods, classes can have methods that do useful work — like calculating whether a tree is mature, or returning a formatted description. The exam sometimes asks you to add a method that checks a condition, returns a computed value, or prints the object\'s data in a specific format.',
+    ideas: [
+      'Methods inside a class always have self as their first parameter',
+      'They can use self.__attribute to access any private attribute',
+      'They can return a value (like a function) or just print something',
+      'Methods can check conditions and return True or False',
+    ],
+    beginnerTip: 'A method is just a function that lives inside a class and knows which object it belongs to — that is what self is for. Every time you call tree1.isMature(), Python secretly passes tree1 as self for you.',
+    commonMistakes: [
+      'Forgetting self in the method definition',
+      'Accessing the attribute without self: writing height instead of self.__height',
+      'Mixing up return and print — return sends a value back, print just displays it',
+      'Not calling the method correctly — always use objectName.methodName()',
+    ],
+    examTip: 'If a question says "write a method called isMature that returns True if age > 50", write exactly that method name and logic. Do not rename it.',
+    code: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height = height\n        self.__age = age\n\n    def getSpecies(self):\n        return self.__species\n\n    def getAge(self):\n        return self.__age\n\n    def isMature(self):\n        if self.__age > 50:\n            return True\n        else:\n            return False\n\n    def describe(self):\n        return self.__species + " is " + str(self.__age) + " years old"\n\ntree1 = Tree("Oak", 12.5, 80)\ntree2 = Tree("Pine", 8.0, 30)\n\nprint(tree1.isMature())\nprint(tree2.isMature())\nprint(tree1.describe())`,
+    io: [
+      {
+        title: 'Calling methods on objects',
+        input: 'tree1 = Tree("Oak", 12.5, 80)\ntree2 = Tree("Pine", 8.0, 30)',
+        output: 'True\nFalse\nOak is 80 years old',
+      },
+    ],
+    challenge: `# Task:\n# Add a method called isDistinction to this Student class.\n# It should return True if grade >= 8, otherwise False.\n\nclass Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n\n    def getName(self):\n        return self.__name\n\n    def getGrade(self):\n        return self.__grade\n\n    # Write isDistinction here\n\ns1 = Student("Alice", 9)\ns2 = Student("Ben", 6)\nprint(s1.isDistinction())\nprint(s2.isDistinction())`,
+    solution: `class Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n\n    def getName(self):\n        return self.__name\n\n    def getGrade(self):\n        return self.__grade\n\n    def isDistinction(self):\n        if self.__grade >= 8:\n            return True\n        else:\n            return False\n\ns1 = Student("Alice", 9)\ns2 = Student("Ben", 6)\nprint(s1.isDistinction())\nprint(s2.isDistinction())`,
+    recommendations: [
+      'Every method (including __init__) must have self as its first parameter.',
+      'Use self.__attributeName inside methods to access private data.',
+      'A method that checks a condition should return True or False, not print them.',
+    ],
+    quiz: [
+      {
+        question: 'Why does every method need self as its first parameter?',
+        options: [
+          'It is just a Python rule with no real purpose',
+          'It lets the method know which specific object it is working with',
+          'It makes the method run faster',
+          'It makes the method private',
+        ],
+        answer: 1,
+        explain: 'self refers to the specific object the method was called on, giving access to that object\'s own attributes.',
+      },
+      {
+        question: 'Inside a method, how do you access a private attribute called __age?',
+        options: [
+          'age',
+          '__age',
+          'self.age',
+          'self.__age',
+        ],
+        answer: 3,
+        explain: 'Inside a class method you always use self.__attributeName to access a private attribute.',
+      },
+      {
+        question: 'What is the difference between return and print inside a method?',
+        options: [
+          'They do the same thing',
+          'return sends a value back to the caller; print only displays it on screen',
+          'print sends a value back; return only displays it',
+          'return can only be used in __init__',
+        ],
+        answer: 1,
+        explain: 'return gives a value back so other code can use it. print only shows it — the value is lost afterwards.',
+      },
+    ],
+  },
+  {
+    id: 'oop-objects-list',
+    title: 'OOP: Storing objects in a list',
+    goal: 'Create multiple objects and store them in a list so you can process them all with a loop.',
+    why: 'In Paper 4 exams, a very common task is to read data (often from a file or a set of inputs) and create one object per record, storing all objects in a list. You then loop through that list to find, filter, or process the objects.',
+    ideas: [
+      'Create an empty list first, then append objects to it',
+      'You can create objects directly inside append()',
+      'A for loop over the list visits each object one at a time',
+      'Call get methods on each object to access its data',
+    ],
+    beginnerTip: 'This is exactly the same as a list of numbers — except instead of numbers, each item in the list is a full object with its own data and methods. Loop through it exactly the same way.',
+    commonMistakes: [
+      'Printing the list directly — you get memory addresses, not useful data',
+      'Forgetting to call get methods inside the loop',
+      'Using range(len(trees)) when a simple for tree in trees loop is cleaner',
+      'Overwriting the same variable name instead of appending to the list',
+    ],
+    examTip: 'The exam question often says "create an array of Tree objects from the data below". This means: make an empty list, then loop through the data and append a new object for each row.',
+    code: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height = height\n        self.__age = age\n\n    def getSpecies(self):\n        return self.__species\n\n    def getHeight(self):\n        return self.__height\n\n    def getAge(self):\n        return self.__age\n\n# Simulate data that might come from a file\ndata = [\n    ("Oak",   12.5, 80),\n    ("Pine",   8.0, 30),\n    ("Birch",  5.5, 15),\n    ("Willow", 9.2, 45),\n]\n\n# Build a list of Tree objects\ntrees = []\nfor row in data:\n    trees.append(Tree(row[0], row[1], row[2]))\n\n# Print each tree's details\nfor tree in trees:\n    print(tree.getSpecies(), tree.getHeight(), tree.getAge())`,
+    io: [
+      {
+        title: 'Printing all objects from the list',
+        input: 'data has 4 rows',
+        output: 'Oak 12.5 80\nPine 8.0 30\nBirch 5.5 15\nWillow 9.2 45',
+      },
+      {
+        title: 'Why you need get methods when printing',
+        input: 'print(trees[0])',
+        output: '<__main__.Tree object at 0x...>\n\nAlways use trees[0].getSpecies() etc. instead.',
+      },
+    ],
+    challenge: `# Task:\n# Given this data for students:\n# data = [("Alice", 9), ("Ben", 6), ("Cara", 8)]\n#\n# Create a list of Student objects (use your Student class with name and grade).\n# Then loop through the list and print each student's name and grade.\n\nclass Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n    def getName(self):\n        return self.__name\n    def getGrade(self):\n        return self.__grade\n\ndata = [("Alice", 9), ("Ben", 6), ("Cara", 8)]\n\n# Build the list and print each student`,
+    solution: `class Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n    def getName(self):\n        return self.__name\n    def getGrade(self):\n        return self.__grade\n\ndata = [("Alice", 9), ("Ben", 6), ("Cara", 8)]\n\nstudents = []\nfor row in data:\n    students.append(Student(row[0], row[1]))\n\nfor s in students:\n    print(s.getName(), s.getGrade())`,
+    recommendations: [
+      'Always start with an empty list and use append() inside a loop.',
+      'When printing, loop through the list and call get methods — never print the object directly.',
+      'If the question says "read from a file", treat each line as one row of data and create one object per line.',
+    ],
+    quiz: [
+      {
+        question: 'What does trees.append(Tree("Oak", 12.5, 80)) do?',
+        options: [
+          'Replaces all existing items with one new Tree',
+          'Creates a new Tree object and adds it to the end of the trees list',
+          'Prints the Tree object',
+          'Removes the last item from trees',
+        ],
+        answer: 1,
+        explain: 'append() adds a new item to the end of the list. Here the item being added is a new Tree object.',
+      },
+      {
+        question: 'After building a list of Tree objects, how do you print every species?',
+        options: [
+          'print(trees)',
+          'for tree in trees: print(tree)',
+          'for tree in trees: print(tree.getSpecies())',
+          'print(trees.getSpecies())',
+        ],
+        answer: 2,
+        explain: 'Loop through the list, then call getSpecies() on each individual object.',
+      },
+    ],
+  },
+  {
+    id: 'oop-filter',
+    title: 'OOP: Filtering objects based on criteria',
+    goal: 'Search a list of objects and display or collect only those that match a condition.',
+    why: 'Almost every A-level OOP question ends with a task like "find all trees older than 50 years" or "list students who achieved a distinction". This means looping through a list of objects, calling a method or getter on each one, and only acting on those that pass a condition.',
+    ideas: [
+      'Loop through the list with a for loop',
+      'Inside the loop, use an if statement to check a condition',
+      'Call a get method or a purpose-built method to get the value to check',
+      'Either print, count, or collect the matching objects',
+    ],
+    beginnerTip: 'This is just a loop + if pattern applied to objects. You already know how to loop and use if. The only new part is that you are calling a method instead of using a plain variable in your condition.',
+    commonMistakes: [
+      'Checking the condition on the list itself instead of on individual objects',
+      'Writing tree.age > 50 instead of tree.getAge() > 50 (private attributes need getters)',
+      'Forgetting to print or store the matching items after the if condition',
+      'Counting items when the question asked to print them, or vice versa',
+    ],
+    examTip: 'Read the question carefully: does it ask you to print matching objects, count them, or collect them into a new list? Each needs slightly different code.',
+    code: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height = height\n        self.__age = age\n\n    def getSpecies(self): return self.__species\n    def getHeight(self):  return self.__height\n    def getAge(self):     return self.__age\n    def isMature(self):   return self.__age > 50\n\ntrees = [\n    Tree("Oak",   12.5, 80),\n    Tree("Pine",   8.0, 30),\n    Tree("Birch",  5.5, 15),\n    Tree("Willow", 9.2, 45),\n    Tree("Yew",    3.1, 200),\n]\n\n# Task 1: print species of mature trees\nprint("Mature trees:")\nfor tree in trees:\n    if tree.isMature():\n        print(tree.getSpecies())\n\n# Task 2: count trees taller than 8 metres\ncount = 0\nfor tree in trees:\n    if tree.getHeight() > 8:\n        count += 1\nprint("Trees taller than 8m:", count)\n\n# Task 3: collect all young trees into a new list\nyoung = []\nfor tree in trees:\n    if tree.getAge() < 40:\n        young.append(tree)\nprint("Young trees:", len(young))`,
+    io: [
+      {
+        title: 'All three filtering tasks',
+        input: '5 trees in the list',
+        output: 'Mature trees:\nOak\nYew\nTrees taller than 8m: 3\nYoung trees: 2',
+      },
+    ],
+    challenge: `# Task:\n# Given a list of Student objects below, write code to:\n# 1. Print the name of every student with grade >= 8\n# 2. Count how many students have grade < 5\n\nclass Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n    def getName(self):  return self.__name\n    def getGrade(self): return self.__grade\n\nstudents = [\n    Student("Alice",  9),\n    Student("Ben",    4),\n    Student("Cara",   8),\n    Student("Dan",    3),\n    Student("Eve",    7),\n]\n\n# Write your filtering code here`,
+    solution: `class Student:\n    def __init__(self, name, grade):\n        self.__name = name\n        self.__grade = grade\n    def getName(self):  return self.__name\n    def getGrade(self): return self.__grade\n\nstudents = [\n    Student("Alice",  9),\n    Student("Ben",    4),\n    Student("Cara",   8),\n    Student("Dan",    3),\n    Student("Eve",    7),\n]\n\nprint("High achievers:")\nfor s in students:\n    if s.getGrade() >= 8:\n        print(s.getName())\n\ncount = 0\nfor s in students:\n    if s.getGrade() < 5:\n        count += 1\nprint("Students with grade below 5:", count)`,
+    recommendations: [
+      'Always use get methods in your if condition, not direct attribute access.',
+      'Read the question: print, count, or collect? Each needs different code.',
+      'If asked to collect matches, make an empty list before the loop and append inside the if.',
+    ],
+    quiz: [
+      {
+        question: 'How do you check if a Tree object\'s age is over 50 inside a loop?',
+        options: [
+          'if tree.__age > 50:',
+          'if age > 50:',
+          'if tree.getAge() > 50:',
+          'if Tree.age > 50:',
+        ],
+        answer: 2,
+        explain: 'Access private data through the get method: tree.getAge(). Direct access with __age fails outside the class.',
+      },
+      {
+        question: 'How do you collect matching objects into a new list?',
+        options: [
+          'Start with result = [] and use result.append(tree) inside the if block',
+          'Print each matching object',
+          'Use result = trees automatically',
+          'Use sorted(trees)',
+        ],
+        answer: 0,
+        explain: 'Make an empty list before the loop, then append each object that passes the condition.',
+      },
+      {
+        question: 'Which approach correctly counts mature trees?',
+        options: [
+          'count = len(trees)',
+          'for tree in trees: count = 1',
+          'count = 0; for tree in trees: if tree.isMature(): count += 1',
+          'count = trees.count(isMature)',
+        ],
+        answer: 2,
+        explain: 'Start at 0, loop through all objects, and add 1 only when the condition is True.',
+      },
+    ],
+  },
+  {
+    id: 'oop-exam',
+    title: 'OOP: Full exam-style question',
+    goal: 'Write a complete class from a specification, build a list of objects from data, and filter by user criteria — exactly as Paper 4 requires.',
+    why: 'Paper 41 Question 2 asked candidates to do all of this in one question: define a class, write a constructor and get methods, create objects from file data, then process the list. This lesson ties everything together so you can practise the full sequence.',
+    ideas: [
+      'Step 1: read the class specification carefully and write the class with private attributes',
+      'Step 2: write __init__ taking all attributes as parameters',
+      'Step 3: write one get method per attribute',
+      'Step 4: read or simulate the data and build a list of objects',
+      'Step 5: loop through the list to process or filter',
+    ],
+    beginnerTip: 'In the real exam, work through the class diagram first — get the class written and tested before trying to build the list. A small error in the class breaks everything else.',
+    commonMistakes: [
+      'Writing the class name with a lowercase letter — Python convention is CapitalCase for classes',
+      'Missing return in a get method so it returns None',
+      'Passing arguments in the wrong order when creating objects',
+      'Forgetting that file data is usually strings — you may need int() or float() to convert',
+    ],
+    examTip: 'The examiner report for Paper 41 Q2 says candidates who failed usually lost marks on the filtering section, not the class definition. Practise the loop+if pattern most.',
+    code: `# Full exam-style example\n# Specification:\n#   Class: Book\n#   Attributes: title (String), author (String), pages (Integer), inStock (Boolean)\n#   Methods: constructor, getTitle, getAuthor, getPages, getInStock, isLong (returns True if pages > 300)\n\nclass Book:\n    def __init__(self, title, author, pages, inStock):\n        self.__title   = title\n        self.__author  = author\n        self.__pages   = pages\n        self.__inStock = inStock\n\n    def getTitle(self):   return self.__title\n    def getAuthor(self):  return self.__author\n    def getPages(self):   return self.__pages\n    def getInStock(self): return self.__inStock\n\n    def isLong(self):\n        return self.__pages > 300\n\n# Simulate file data\nraw = [\n    ("Dune",                "Herbert",  412,  True),\n    ("The Hobbit",          "Tolkien",  310,  True),\n    ("Animal Farm",         "Orwell",   112,  False),\n    ("1984",                "Orwell",   328,  True),\n    ("Of Mice and Men",     "Steinbeck", 187, False),\n]\n\n# Build the list\nlibrary = []\nfor row in raw:\n    library.append(Book(row[0], row[1], row[2], row[3]))\n\n# Task A: print titles of long books\nprint("Long books (>300 pages):")\nfor book in library:\n    if book.isLong():\n        print(book.getTitle())\n\n# Task B: list in-stock books by Orwell\nprint("\\nOrwell books in stock:")\nfor book in library:\n    if book.getAuthor() == "Orwell" and book.getInStock():\n        print(book.getTitle())`,
+    io: [
+      {
+        title: 'Full output',
+        input: '5 books in the library',
+        output: 'Long books (>300 pages):\nDune\nThe Hobbit\n1984\n\nOrwell books in stock:\n1984',
+      },
+    ],
+    challenge: `# Exam-style task:\n# Class: Car\n# Attributes: make (String), year (Integer), mileage (Integer)\n# Methods: getMake, getYear, getMileage, isOld (returns True if year < 2010)\n#\n# Data:\n# cars_data = [\n#   ("Toyota", 2005, 120000),\n#   ("Ford",   2015,  45000),\n#   ("BMW",    2008,  88000),\n#   ("Honda",  2019,  12000),\n# ]\n#\n# 1. Write the full Car class\n# 2. Build a list of Car objects from cars_data\n# 3. Print the make of every old car (year < 2010)\n# 4. Count how many cars have mileage under 50000`,
+    solution: `class Car:\n    def __init__(self, make, year, mileage):\n        self.__make    = make\n        self.__year    = year\n        self.__mileage = mileage\n\n    def getMake(self):    return self.__make\n    def getYear(self):    return self.__year\n    def getMileage(self): return self.__mileage\n\n    def isOld(self):\n        return self.__year < 2010\n\ncars_data = [\n    ("Toyota", 2005, 120000),\n    ("Ford",   2015,  45000),\n    ("BMW",    2008,  88000),\n    ("Honda",  2019,  12000),\n]\n\ncars = []\nfor row in cars_data:\n    cars.append(Car(row[0], row[1], row[2]))\n\nprint("Old cars:")\nfor car in cars:\n    if car.isOld():\n        print(car.getMake())\n\ncount = 0\nfor car in cars:\n    if car.getMileage() < 50000:\n        count += 1\nprint("Low mileage cars:", count)`,
+    recommendations: [
+      'Follow the five-step sequence: class → constructor → getters → build list → filter.',
+      'Check your attribute names match the specification exactly.',
+      'Test with a small dataset first. If your class works for one object, it will work for fifty.',
+    ],
+    quiz: [
+      {
+        question: 'In which order should you write an OOP solution in the exam?',
+        options: [
+          'Filter first, then write the class',
+          'Class definition → constructor → getters → build list → filter/process',
+          'Build the list first, then add getters',
+          'Write the filter loop first so you know what methods you need',
+        ],
+        answer: 1,
+        explain: 'Always write the class structure first. The list and filtering depend on the class being correct.',
+      },
+      {
+        question: 'File data is often read as strings. If you need an integer, what should you do?',
+        options: [
+          'Python converts it automatically',
+          'Use int() to convert the string to an integer before passing it to the constructor',
+          'Store it as a string and convert later',
+          'Strings and integers can be used interchangeably',
+        ],
+        answer: 1,
+        explain: 'Input and file data arrives as strings. Wrap with int() or float() when you need a number.',
+      },
+      {
+        question: 'Why do the examiner reports say candidates lose most marks on the filtering section?',
+        options: [
+          'Because the class diagram is always wrong',
+          'Because candidates forget to write the class',
+          'Because they get the loop+if+getter pattern wrong even when the class is correct',
+          'Because filtering is not on the syllabus',
+        ],
+        answer: 2,
+        explain: 'The class is often written well but the final loop+if logic is where marks are dropped. Practise that part most.',
+      },
+    ],
+  },
 ];
 
 const labExercises = [
@@ -610,6 +1037,48 @@ const labExercises = [
     starterCode: `def total_list(numbers):\n    # Base case\n\n    # Recursive case\n\nprint(total_list([4, 5, 6]))`,
     answerCode: `def total_list(numbers):\n    if len(numbers) == 0:\n        return 0\n    else:\n        return numbers[0] + total_list(numbers[1:])\n\nprint(total_list([4, 5, 6]))`,
     hint: 'Use an empty list as the base case, then add the first item to the recursive result of the rest.',
+  },
+
+  // OOP LAB EXERCISES
+  {
+    id: 'lab-oop-class',
+    topic: 'OOP: Write a class',
+    description: 'Complete the Tree class with private attributes, a constructor, and get methods. Then create one object and print its species.',
+    input: '',
+    expectedOutput: 'Oak',
+    starterCode: `class Tree:\n    def __init__(self, species, height, age):\n        # Store each as a private attribute using self.__name = value\n        pass\n\n    def getSpecies(self):\n        # Return the species\n        pass\n\n    def getHeight(self):\n        # Return the height\n        pass\n\n    def getAge(self):\n        # Return the age\n        pass\n\n# Create: tree1 = Tree("Oak", 12.5, 80)\n# Print tree1.getSpecies()`,
+    answerCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height  = height\n        self.__age     = age\n\n    def getSpecies(self):\n        return self.__species\n\n    def getHeight(self):\n        return self.__height\n\n    def getAge(self):\n        return self.__age\n\ntree1 = Tree("Oak", 12.5, 80)\nprint(tree1.getSpecies())`,
+    hint: 'In __init__, write self.__species = species (double underscore). In getSpecies, write return self.__species. Then call tree1 = Tree("Oak", 12.5, 80).',
+  },
+  {
+    id: 'lab-oop-method',
+    topic: 'OOP: Add a method',
+    description: 'Add isMature() that returns True if age > 50. Test it on two trees.',
+    input: '',
+    expectedOutput: 'True\nFalse',
+    starterCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height  = height\n        self.__age     = age\n\n    def getAge(self):\n        return self.__age\n\n    def isMature(self):\n        # Return True if self.__age > 50, otherwise False\n        pass\n\ntree1 = Tree("Oak",  12.5, 80)\ntree2 = Tree("Pine",  8.0, 30)\nprint(tree1.isMature())\nprint(tree2.isMature())`,
+    answerCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height  = height\n        self.__age     = age\n\n    def getAge(self):\n        return self.__age\n\n    def isMature(self):\n        if self.__age > 50:\n            return True\n        else:\n            return False\n\ntree1 = Tree("Oak",  12.5, 80)\ntree2 = Tree("Pine",  8.0, 30)\nprint(tree1.isMature())\nprint(tree2.isMature())`,
+    hint: 'Inside isMature, use self.__age (not self.age). Check if self.__age > 50 and return True or False.',
+  },
+  {
+    id: 'lab-oop-list',
+    topic: 'OOP: Build a list of objects',
+    description: 'Create a list of Tree objects from the data provided, then print every species.',
+    input: '',
+    expectedOutput: 'Oak\nPine\nBirch\nWillow',
+    starterCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height  = height\n        self.__age     = age\n    def getSpecies(self): return self.__species\n    def getHeight(self):  return self.__height\n    def getAge(self):     return self.__age\n\ndata = [\n    ("Oak",    12.5, 80),\n    ("Pine",    8.0, 30),\n    ("Birch",   5.5, 15),\n    ("Willow",  9.2, 45),\n]\n\n# 1. Create trees = []\n# 2. Loop through data and append Tree objects\n# 3. Loop through trees and print each species`,
+    answerCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__height  = height\n        self.__age     = age\n    def getSpecies(self): return self.__species\n    def getHeight(self):  return self.__height\n    def getAge(self):     return self.__age\n\ndata = [\n    ("Oak",    12.5, 80),\n    ("Pine",    8.0, 30),\n    ("Birch",   5.5, 15),\n    ("Willow",  9.2, 45),\n]\n\ntrees = []\nfor row in data:\n    trees.append(Tree(row[0], row[1], row[2]))\n\nfor tree in trees:\n    print(tree.getSpecies())`,
+    hint: 'Start with trees = []. In the loop: trees.append(Tree(row[0], row[1], row[2])). Then for tree in trees: print(tree.getSpecies())',
+  },
+  {
+    id: 'lab-oop-filter',
+    topic: 'OOP: Filter objects',
+    description: 'Print the species of every tree with age > 50.',
+    input: '',
+    expectedOutput: 'Oak\nYew',
+    starterCode: `class Tree:\n    def __init__(self, species, height, age):\n        self.__species = species\n        self.__age     = age\n    def getSpecies(self): return self.__species\n    def getAge(self):     return self.__age\n    def isMature(self):   return self.__age > 50\n\ntrees = [\n    Tree("Oak",    80),\n    Tree("Pine",   30),\n    Tree("Birch",  15),\n    Tree("Willow", 45),\n    Tree("Yew",   200),\n]\n\n# Loop through trees\n# Use if tree.isMature(): to check\n# Print tree.getSpecies() for matching trees`,
+    answerCode: `class Tree:\n    def __init__(self, species, age):\n        self.__species = species\n        self.__age     = age\n    def getSpecies(self): return self.__species\n    def getAge(self):     return self.__age\n    def isMature(self):   return self.__age > 50\n\ntrees = [\n    Tree("Oak",    80),\n    Tree("Pine",   30),\n    Tree("Birch",  15),\n    Tree("Willow", 45),\n    Tree("Yew",   200),\n]\n\nfor tree in trees:\n    if tree.isMature():\n        print(tree.getSpecies())`,
+    hint: 'Loop: for tree in trees. Condition: if tree.isMature(). Action: print(tree.getSpecies()). Three lines of code.',
   },
 ];
 
@@ -1439,6 +1908,289 @@ function PracticeLab() {
   );
 }
 
+// ── OOP CLASS BUILDER VISUALISER ─────────────────────────────────────────────
+function OopClassBuilder() {
+  const [className, setClassName] = React.useState('Tree');
+  const [attrs, setAttrs] = React.useState([
+    { name: 'species', type: 'String' },
+    { name: 'height', type: 'Float' },
+    { name: 'age', type: 'Integer' },
+  ]);
+  const [newAttrName, setNewAttrName] = React.useState('');
+  const [newAttrType, setNewAttrType] = React.useState('String');
+  const [showGetters, setShowGetters] = React.useState(true);
+  const [showExample, setShowExample] = React.useState(false);
+  const [exampleArgs, setExampleArgs] = React.useState('');
+  const [activeTab, setActiveTab] = React.useState('class');
+
+  const typeDefaults = { String: '"value"', Integer: '0', Float: '0.0', Boolean: 'False' };
+
+  const addAttr = () => {
+    const trimmed = newAttrName.trim().replace(/\s+/g, '_');
+    if (!trimmed) return;
+    setAttrs((prev) => [...prev, { name: trimmed, type: newAttrType }]);
+    setNewAttrName('');
+  };
+
+  const removeAttr = (index) => setAttrs((prev) => prev.filter((_, i) => i !== index));
+
+  const safeClass = className.trim() || 'MyClass';
+
+  const classCode = [
+    'class ' + safeClass + ':',
+    '    def __init__(self, ' + attrs.map((a) => a.name).join(', ') + '):',
+    ...attrs.map((a) => '        self.__' + a.name + ' = ' + a.name),
+    '',
+    ...(showGetters
+      ? attrs.flatMap((a) => [
+          '    def get' + a.name.charAt(0).toUpperCase() + a.name.slice(1) + '(self):',
+          '        return self.__' + a.name,
+          '',
+        ])
+      : []),
+  ].join('
+');
+
+  const defaultArgs = attrs.map((a) => typeDefaults[a.type] || '"value"').join(', ');
+  const usedArgs = exampleArgs.trim() || defaultArgs;
+  const varName = safeClass.charAt(0).toLowerCase() + safeClass.slice(1) + '1';
+
+  const exampleCode = [
+    '# Create one object',
+    varName + ' = ' + safeClass + '(' + usedArgs + ')',
+    '',
+    ...(showGetters
+      ? attrs.map((a) => 'print(' + varName + '.get' + a.name.charAt(0).toUpperCase() + a.name.slice(1) + '())')
+      : ['print(' + varName + ')  # needs get methods to see data']),
+  ].join('
+');
+
+  const diagramRows = attrs.map((a) => '  - __' + a.name + ' : ' + a.type).join('
+');
+  const diagramMethods = [
+    '  + __init__(' + attrs.map((a) => a.name + ': ' + a.type).join(', ') + ')',
+    ...(showGetters
+      ? attrs.map((a) => '  + get' + a.name.charAt(0).toUpperCase() + a.name.slice(1) + '() : ' + a.type)
+      : []),
+  ].join('
+');
+  const classDiagram = '┌─────────────────────────────────────┐
+│           ' + safeClass.padEnd(25) + '│
+├─────────────────────────────────────┤
+' + diagramRows + '
+├─────────────────────────────────────┤
+' + diagramMethods + '
+└─────────────────────────────────────┘';
+
+  const a0 = attrs[0];
+  const a0Cap = a0 ? a0.name.charAt(0).toUpperCase() + a0.name.slice(1) : 'Name';
+  const commonErrors = [
+    { bad: 'self.' + (a0 ? a0.name : 'name') + ' = ...', good: 'self.__' + (a0 ? a0.name : 'name') + ' = ...', msg: 'Missing double underscore makes it public, not private.' },
+    { bad: 'def __init__(' + attrs.map((a) => a.name).join(', ') + '):', good: 'def __init__(self, ' + attrs.map((a) => a.name).join(', ') + '):', msg: 'Forgot self as the first parameter.' },
+    { bad: 'def get' + a0Cap + '(self):
+    self.__' + (a0 ? a0.name : 'name'), good: 'def get' + a0Cap + '(self):
+    return self.__' + (a0 ? a0.name : 'name'), msg: 'Missing return — the method gives back None instead of the value.' },
+  ];
+
+  return (
+    <Card className="rounded-2xl shadow-sm">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Code2 className="h-5 w-5" /> OOP class builder
+        </CardTitle>
+        <CardDescription>
+          Build any class interactively. Add attributes and see the Python code, class diagram, and common mistakes update instantly.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="text-sm font-semibold text-slate-700 w-24">Class name</label>
+          <Input value={className} onChange={(e) => setClassName(e.target.value)} placeholder="e.g. Tree" className="w-48" />
+          <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+            <input type="checkbox" checked={showGetters} onChange={(e) => setShowGetters(e.target.checked)} className="h-4 w-4" />
+            Include get methods
+          </label>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-slate-700">Attributes (private — stored as self.__name)</p>
+          <div className="space-y-2 mb-3">
+            {attrs.map((a, i) => (
+              <div key={i} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                <span className="font-mono text-sm text-slate-800 flex-1">self.__{a.name} : {a.type}</span>
+                <button onClick={() => removeAttr(i)} className="text-xs text-slate-400 hover:text-rose-500 px-2">✕</button>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Input value={newAttrName} onChange={(e) => setNewAttrName(e.target.value)} placeholder="attribute name" className="w-40"
+              onKeyDown={(e) => { if (e.key === 'Enter') addAttr(); }} />
+            <select value={newAttrType} onChange={(e) => setNewAttrType(e.target.value)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+              {['String', 'Integer', 'Float', 'Boolean'].map((t) => <option key={t}>{t}</option>)}
+            </select>
+            <Button onClick={addAttr} variant="outline">+ Add</Button>
+          </div>
+        </div>
+
+        <div className="flex gap-2 border-b border-slate-200">
+          {['class', 'diagram', 'errors'].map((tab) => (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              className={"rounded-t-xl px-4 py-2 text-sm font-medium transition " + (activeTab === tab ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100')}>
+              {tab === 'class' ? 'Python code' : tab === 'diagram' ? 'Class diagram' : 'Common mistakes'}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === 'class' && (
+          <div className="space-y-3">
+            <CodeBlock code={classCode} />
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <p className="text-sm font-semibold text-slate-700">Example usage</p>
+                <button onClick={() => setShowExample((v) => !v)} className="text-xs text-slate-500 underline">{showExample ? 'hide' : 'show'}</button>
+              </div>
+              {showExample && (
+                <div className="space-y-2">
+                  <Input value={exampleArgs} onChange={(e) => setExampleArgs(e.target.value)}
+                    placeholder={'Custom args, e.g. ' + defaultArgs} className="font-mono text-sm" />
+                  <CodeBlock code={exampleCode} />
+                  <p className="text-xs text-slate-500">Leave blank to use default placeholder values.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'diagram' && (
+          <div>
+            <p className="mb-3 text-sm text-slate-600">This is how the class looks in a UML class diagram — the format used in exam questions.</p>
+            <pre className="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-950 p-4 text-sm leading-6 text-slate-100 font-mono">{classDiagram}</pre>
+            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-slate-700">
+              <span className="font-semibold">Exam tip:</span> When you see a class diagram like this, your job is to write the Python code. Attributes with - are private (double underscore). Methods with + are public.
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'errors' && (
+          <div className="space-y-3">
+            <p className="text-sm text-slate-600">These are the most common OOP mistakes. Compare wrong vs correct versions.</p>
+            {commonErrors.map((e, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 overflow-hidden">
+                <div className="grid md:grid-cols-2">
+                  <div className="bg-rose-50 p-3">
+                    <p className="text-xs font-semibold text-rose-700 mb-1">✗ Wrong</p>
+                    <pre className="text-sm font-mono text-rose-900 whitespace-pre-wrap">{e.bad}</pre>
+                  </div>
+                  <div className="bg-emerald-50 p-3">
+                    <p className="text-xs font-semibold text-emerald-700 mb-1">✓ Correct</p>
+                    <pre className="text-sm font-mono text-emerald-900 whitespace-pre-wrap">{e.good}</pre>
+                  </div>
+                </div>
+                <div className="bg-slate-50 px-3 py-2 text-sm text-slate-700">{e.msg}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function OopFilterPlayground() {
+  const trees = [
+    { species: 'Oak',    height: 12.5, age: 80  },
+    { species: 'Pine',   height: 8.0,  age: 30  },
+    { species: 'Birch',  height: 5.5,  age: 15  },
+    { species: 'Willow', height: 9.2,  age: 45  },
+    { species: 'Yew',    height: 3.1,  age: 200 },
+    { species: 'Ash',    height: 11.0, age: 60  },
+    { species: 'Cedar',  height: 6.8,  age: 25  },
+  ];
+
+  const [filterType, setFilterType] = React.useState('age');
+  const [operator, setOperator] = React.useState('>');
+  const [threshold, setThreshold] = React.useState('50');
+  const [showCode, setShowCode] = React.useState(false);
+
+  const num = Number(threshold);
+  const filtered = trees.filter((t) => {
+    const val = filterType === 'age' ? t.age : t.height;
+    if (operator === '>') return val > num;
+    if (operator === '<') return val < num;
+    if (operator === '>=') return val >= num;
+    if (operator === '<=') return val <= num;
+    if (operator === '==') return val === num;
+    return false;
+  });
+
+  const getter = filterType === 'age' ? 'getAge()' : 'getHeight()';
+  const code = 'for tree in trees:
+    if tree.' + getter + ' ' + operator + ' ' + threshold + ':
+        print(tree.getSpecies())';
+  const output = filtered.map((t) => t.species).join('
+') || '(no matches)';
+
+  return (
+    <Card className="rounded-2xl shadow-sm">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Search className="h-5 w-5" /> OOP filtering playground
+        </CardTitle>
+        <CardDescription>Set a filter condition and see which Tree objects match. The generated Python code updates live.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <span className="text-sm font-semibold text-slate-700">Show trees where</span>
+          <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+            <option value="age">age</option>
+            <option value="height">height</option>
+          </select>
+          <select value={operator} onChange={(e) => setOperator(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+            {['>', '<', '>=', '<=', '=='].map((op) => <option key={op}>{op}</option>)}
+          </select>
+          <Input value={threshold} onChange={(e) => setThreshold(e.target.value)} className="w-24 text-sm" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <p className="mb-2 text-sm font-semibold text-slate-700">All trees</p>
+            <div className="space-y-1">
+              {trees.map((t) => {
+                const passes = filtered.includes(t);
+                const val = filterType === 'age' ? t.age : t.height;
+                return (
+                  <div key={t.species} className={"rounded-xl border px-3 py-2 text-sm " + (passes ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 bg-white text-slate-500')}>
+                    {t.species} — {filterType}: {val} {passes ? '✓' : '✗'}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <p className="mb-2 text-sm font-semibold text-slate-700">Output ({filtered.length} match{filtered.length !== 1 ? 'es' : ''})</p>
+              <pre className="min-h-[120px] rounded-2xl border border-slate-200 bg-emerald-50 p-3 text-sm">{output}</pre>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold text-slate-700">Generated Python</p>
+                <button onClick={() => setShowCode((v) => !v)} className="text-xs text-slate-500 underline">{showCode ? 'hide' : 'show'}</button>
+              </div>
+              {showCode && <CodeBlock code={code} />}
+            </div>
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-slate-700">
+              <span className="font-semibold">Key exam pattern:</span> for loop → if with getter → print/count/append. This is what P4 always tests.
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function PythonProgrammingTutorApp() {
   const [currentLesson, setCurrentLesson] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -1457,7 +2209,7 @@ export default function PythonProgrammingTutorApp() {
             <CardHeader>
               <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10"><Code2 className="h-6 w-6" /></div>
               <CardTitle className="text-2xl text-white">Python Programming Tutor</CardTitle>
-              <CardDescription className="text-slate-300">Learn lists, standard algorithms, recursion, visible input/output, quizzes, and browser-based Python practice in one place.</CardDescription>
+              <CardDescription className="text-slate-300">Lists, algorithms, recursion, OOP (classes, constructors, get methods, filtering objects) — with quizzes and in-browser Python practice.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
@@ -1542,6 +2294,28 @@ export default function PythonProgrammingTutorApp() {
                       <h3 className="text-lg font-semibold">Shown inputs and outputs</h3>
                       {lesson.io.map((item) => <ExampleIO key={item.title} {...item} />)}
                     </div>
+                    {lesson.beginnerTip && (
+                      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                        <p className="mb-1 text-sm font-semibold text-blue-800">Beginner tip</p>
+                        <p className="text-sm leading-6 text-blue-900">{lesson.beginnerTip}</p>
+                      </div>
+                    )}
+                    {lesson.examTip && (
+                      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                        <p className="mb-1 text-sm font-semibold text-amber-800">Exam tip</p>
+                        <p className="text-sm leading-6 text-amber-900">{lesson.examTip}</p>
+                      </div>
+                    )}
+                    {lesson.commonMistakes && (
+                      <div>
+                        <h3 className="mb-3 text-lg font-semibold">Common mistakes to avoid</h3>
+                        <div className="grid gap-2 md:grid-cols-2">
+                          {lesson.commonMistakes.map((item) => (
+                            <div key={item} className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">✗ {item}</div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {lesson.recommendations && (
                       <div>
                         <h3 className="mb-3 text-lg font-semibold">Examiner recommendations</h3>
@@ -1568,6 +2342,8 @@ export default function PythonProgrammingTutorApp() {
                 {lesson.id === 'recursion-useful' && <RecursionUseCases />}
                 {lesson.id === 'recursion-stack' && <RecursionStackDemo />}
                 {lesson.id === 'testing' && <TestBench />}
+                {['oop-class','oop-getters','oop-methods'].includes(lesson.id) && <OopClassBuilder />}
+                {['oop-objects-list','oop-filter','oop-exam'].includes(lesson.id) && <OopFilterPlayground />}
 
                 <QuizBlock lessonId={lesson.id} questions={lesson.quiz} answers={answers} setAnswers={setAnswers} />
 
@@ -1594,6 +2370,10 @@ export default function PythonProgrammingTutorApp() {
                   <div className="rounded-2xl border border-slate-200 p-4">Identify the base case and recursive case in a recursive function.</div>
                   <div className="rounded-2xl border border-slate-200 p-4">Trace recursive calls down to the base case and back up during unwinding.</div>
                   <div className="rounded-2xl border border-slate-200 p-4">Explain stack use and when recursion is a sensible choice.</div>
+                  <div className="rounded-2xl border border-slate-200 p-4">Write a class with private attributes and a constructor (__init__).</div>
+                  <div className="rounded-2xl border border-slate-200 p-4">Write get methods for each private attribute.</div>
+                  <div className="rounded-2xl border border-slate-200 p-4">Create objects and store them in a list using append().</div>
+                  <div className="rounded-2xl border border-slate-200 p-4">Filter a list of objects using a loop and get methods in the condition.</div>
                 </CardContent>
               </Card>
 
@@ -1607,6 +2387,8 @@ export default function PythonProgrammingTutorApp() {
                   <p>For binary search, sort the list first. For bubble sort, trace each swap carefully.</p>
                   <p>When testing, include a normal case, a boundary case, and at least one unusual case.</p>
                   <p>For recursion, always identify the base case, the recursive case, and how the argument changes each call.</p>
+                  <p>For OOP: always make attributes private with <span className="font-mono">self.__name</span>. Every method needs <span className="font-mono">self</span>. Every get method needs <span className="font-mono">return</span>.</p>
+                  <p>In the exam, follow this order: write the class → add getters → build the list → write the filter loop.</p>
                 </CardContent>
               </Card>
             </div>
