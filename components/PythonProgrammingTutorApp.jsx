@@ -1948,8 +1948,7 @@ function OopClassBuilder() {
           '',
         ])
       : []),
-  ].join('
-');
+  ].join('\n');
 
   const defaultArgs = attrs.map((a) => typeDefaults[a.type] || '"value"').join(', ');
   const usedArgs = exampleArgs.trim() || defaultArgs;
@@ -1962,34 +1961,23 @@ function OopClassBuilder() {
     ...(showGetters
       ? attrs.map((a) => 'print(' + varName + '.get' + a.name.charAt(0).toUpperCase() + a.name.slice(1) + '())')
       : ['print(' + varName + ')  # needs get methods to see data']),
-  ].join('
-');
+  ].join('\n');
 
-  const diagramRows = attrs.map((a) => '  - __' + a.name + ' : ' + a.type).join('
-');
+  const diagramRows = attrs.map((a) => '  - __' + a.name + ' : ' + a.type).join('\n');
   const diagramMethods = [
     '  + __init__(' + attrs.map((a) => a.name + ': ' + a.type).join(', ') + ')',
     ...(showGetters
       ? attrs.map((a) => '  + get' + a.name.charAt(0).toUpperCase() + a.name.slice(1) + '() : ' + a.type)
       : []),
-  ].join('
-');
-  const classDiagram = '┌─────────────────────────────────────┐
-│           ' + safeClass.padEnd(25) + '│
-├─────────────────────────────────────┤
-' + diagramRows + '
-├─────────────────────────────────────┤
-' + diagramMethods + '
-└─────────────────────────────────────┘';
+  ].join('\n');
+  const classDiagram = '┌─────────────────────────────────────┐\n│           ' + safeClass.padEnd(25) + '│\n├─────────────────────────────────────┤\n' + diagramRows + '\n├─────────────────────────────────────┤\n' + diagramMethods + '\n└─────────────────────────────────────┘';
 
   const a0 = attrs[0];
   const a0Cap = a0 ? a0.name.charAt(0).toUpperCase() + a0.name.slice(1) : 'Name';
   const commonErrors = [
     { bad: 'self.' + (a0 ? a0.name : 'name') + ' = ...', good: 'self.__' + (a0 ? a0.name : 'name') + ' = ...', msg: 'Missing double underscore makes it public, not private.' },
     { bad: 'def __init__(' + attrs.map((a) => a.name).join(', ') + '):', good: 'def __init__(self, ' + attrs.map((a) => a.name).join(', ') + '):', msg: 'Forgot self as the first parameter.' },
-    { bad: 'def get' + a0Cap + '(self):
-    self.__' + (a0 ? a0.name : 'name'), good: 'def get' + a0Cap + '(self):
-    return self.__' + (a0 ? a0.name : 'name'), msg: 'Missing return — the method gives back None instead of the value.' },
+    { bad: 'def get' + a0Cap + '(self):\n    self.__' + (a0 ? a0.name : 'name'), good: 'def get' + a0Cap + '(self):\n    return self.__' + (a0 ? a0.name : 'name'), msg: 'Missing return — the method gives back None instead of the value.' },
   ];
 
   return (
@@ -2125,11 +2113,8 @@ function OopFilterPlayground() {
   });
 
   const getter = filterType === 'age' ? 'getAge()' : 'getHeight()';
-  const code = 'for tree in trees:
-    if tree.' + getter + ' ' + operator + ' ' + threshold + ':
-        print(tree.getSpecies())';
-  const output = filtered.map((t) => t.species).join('
-') || '(no matches)';
+  const code = 'for tree in trees:\n    if tree.' + getter + ' ' + operator + ' ' + threshold + ':\n        print(tree.getSpecies())';
+  const output = filtered.map((t) => t.species).join('\n') || '(no matches)';
 
   return (
     <Card className="rounded-2xl shadow-sm">
